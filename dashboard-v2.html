@@ -134,15 +134,12 @@
             margin-right: 1rem;
         }
         
-        .notification-icon, .eye-toggle {
+        .notification-icon {
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-        }
-        
-        .notification-icon {
             width: 24px;
             height: 24px;
             color: white;
@@ -152,21 +149,6 @@
         .notification-icon:hover {
             transform: scale(1.2);
             color: var(--gold);
-        }
-        
-        .eye-toggle {
-            width: 28px;
-            height: 28px;
-            color: var(--gold);
-            font-size: 20px;
-            border-radius: 8px;
-            background: rgba(200, 154, 58, 0.1);
-        }
-        
-        .eye-toggle:hover {
-            transform: scale(1.1);
-            background: rgba(200, 154, 58, 0.2);
-            color: white;
         }
         
         .notification-badge {
@@ -713,39 +695,91 @@
         
         /* Receipt */
         .receipt {
-            background: linear-gradient(135deg, #F9FAFB 0%, #FFFFFF 100%);
-            border: 2px dashed #E5E7EB;
-            border-radius: 16px;
-            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .receipt-header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--slate) 100%);
+            color: white;
             text-align: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px dashed #E5E7EB;
+            padding: 2rem 1.5rem;
         }
         
         .receipt-logo {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 0.75rem;
+            font-size: 48px;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+        
+        .receipt-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+            margin-bottom: 0.75rem;
         }
         
         .receipt-amount {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .receipt-description {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+        
+        .receipt-body {
+            padding: 1.5rem;
+        }
+        
+        .receipt-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .receipt-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .receipt-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #9CA3AF;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
         }
         
         .receipt-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.625rem 0;
+            padding: 0.5rem 0;
             font-size: 14px;
+            border-bottom: 1px solid #F3F4F6;
         }
         
-        .receipt-label { color: #6B7280; }
-        .receipt-value { font-weight: 500; color: #1F2937; }
+        .receipt-row:last-child {
+            border-bottom: none;
+        }
+        
+        .receipt-label {
+            color: #9CA3AF;
+            font-size: 13px;
+        }
+        
+        .receipt-value {
+            font-weight: 600;
+            color: #1F2937;
+            text-align: right;
+            word-break: break-word;
+        }
         
         .receipt-status {
             display: inline-flex;
@@ -755,10 +789,20 @@
             border-radius: 9999px;
             font-size: 12px;
             font-weight: 600;
+            text-transform: capitalize;
         }
         
         .receipt-status.completed { background: #D1FAE5; color: #065F46; }
         .receipt-status.pending { background: #FEF3C7; color: #92400E; }
+        
+        .receipt-footer {
+            background: #F9FAFB;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 12px;
+            border-top: 1px solid #E5E7EB;
+        }
         
         /* Live Chat: Use 3CX widget instead */
         
@@ -783,6 +827,175 @@
             width: 20px;
             height: 20px;
             color: white;
+        }
+        
+        /* Notification Tabs */
+        .notification-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #F3F4F6;
+        }
+        
+        .notification-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: #9CA3AF;
+            transition: all 0.2s;
+        }
+        
+        .notification-tab.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+        
+        .notification-tab-content {
+            display: none;
+        }
+        
+        .notification-tab-content.active {
+            display: block;
+        }
+        
+        .notification-transaction-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .notification-transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+        
+        .notification-transaction-icon.income {
+            background: #D1FAE5;
+            color: #059669;
+        }
+        
+        .notification-transaction-icon.expense {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        
+        .notification-transaction-icon.pending {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        
+        .notification-transaction-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .notification-transaction-title {
+            font-weight: 600;
+            color: #1F2937;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .notification-transaction-meta {
+            font-size: 13px;
+            color: #9CA3AF;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .notification-transaction-amount {
+            text-align: right;
+            flex-shrink: 0;
+        }
+        
+        .notification-transaction-value {
+            font-weight: 700;
+            font-size: 15px;
+        }
+        
+        .notification-transaction-value.income {
+            color: #059669;
+        }
+        
+        .notification-transaction-value.expense {
+            color: #DC2626;
+        }
+        
+        .notification-transaction-status {
+            font-size: 11px;
+            color: #9CA3AF;
+            text-transform: lowercase;
+        }
+        
+        .notification-report-card {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #E5E7EB;
+        }
+        
+        .notification-report-title {
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .notification-report-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 14px;
+        }
+        
+        .notification-report-stat-label {
+            color: #6B7280;
+        }
+        
+        .notification-report-stat-value {
+            font-weight: 600;
+            color: #1F2937;
+        }
+        
+        .notification-report-stat-value.income {
+            color: #059669;
+        }
+        
+        .notification-report-stat-value.expense {
+            color: #DC2626;
+        }
+        
+        .notification-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #9CA3AF;
+        }
+        
+        .notification-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
         }
         
         /* Toast */
@@ -863,9 +1076,6 @@
         <div class="balance-label">Available Balance</div>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
             <div class="balance-amount" id="balanceAmount">€0.00</div>
-            <div class="eye-toggle" id="eyeToggle" onclick="toggleBalanceVisibility()">
-                👁️
-            </div>
         </div>
         
         <div class="account-info">
@@ -965,8 +1175,10 @@
         </a>
     </nav>
 
-    <!-- Support: 3CX Live Chat -->
-    <call-us-selector phonesystem-url="https://1575.3cx.cloud" party="LiveChat962369"></call-us-selector>
+    <!-- 3CX Live Chat Widget -->
+    <call-us-selector
+      phonesystem-url="https://1575.3cx.cloud">
+    </call-us-selector>
     <script defer src="https://downloads-global.3cx.com/downloads/livechatandtalk/v1/callus.js" id="tcx-callus-js" charset="utf-8"></script>
 
     <!-- ==================== MODALS ==================== -->
@@ -1118,27 +1330,30 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Front of Check</label>
-                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer" onclick="document.getElementById('frontCheck').click()">
-                            <input type="file" id="frontCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'front')">
-                            <svg class="w-10 h-10 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <p class="text-gray-600 text-sm">Tap to upload front</p>
-                        </div>
-                        <p id="frontFileName" class="text-sm text-green-600 mt-2 hidden"></p>
+                        <label class="form-label">Check Amount</label>
+                        <input type="number" id="checkAmount" class="form-input" placeholder="0.00" step="0.01" required>
+                        <p class="input-hint">Maximum: €10,000.00</p>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Back of Check</label>
-                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer" onclick="document.getElementById('backCheck').click()">
-                            <input type="file" id="backCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'back')">
-                            <svg class="w-10 h-10 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <p class="text-gray-600 text-sm">Tap to upload back</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label class="form-label">Front of Check</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer" onclick="document.getElementById('frontCheck').click()">
+                                <input type="file" id="frontCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'front')" required>
+                                <div style="font-size: 32px; margin-bottom: 0.5rem;" id="frontIcon">📷</div>
+                                <p class="text-gray-600 text-xs">Front</p>
+                                <p id="frontFileName" class="text-xs text-green-600 mt-1 hidden">✓</p>
+                            </div>
                         </div>
-                        <p id="backFileName" class="text-sm text-green-600 mt-2 hidden"></p>
+                        <div>
+                            <label class="form-label">Back of Check</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer" onclick="document.getElementById('backCheck').click()">
+                                <input type="file" id="backCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'back')" required>
+                                <div style="font-size: 32px; margin-bottom: 0.5rem;" id="backIcon">📷</div>
+                                <p class="text-gray-600 text-xs">Back</p>
+                                <p id="backFileName" class="text-xs text-green-600 mt-1 hidden">✓</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">Continue to PIN</button>
@@ -1316,6 +1531,41 @@
         </div>
     </div>
 
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal-overlay" onclick="closeModalOnOverlay(event, 'notificationsModal')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3 class="modal-title">Notifications & Activity</h3>
+                <button class="modal-close" onclick="closeModal('notificationsModal')">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Tabs -->
+                <div class="notification-tabs">
+                    <button class="notification-tab active" onclick="switchNotificationTab('transactions')">
+                        <span>💰 Transactions</span>
+                    </button>
+                    <button class="notification-tab" onclick="switchNotificationTab('reports')">
+                        <span>📊 Reports</span>
+                    </button>
+                </div>
+
+                <!-- Transactions Tab -->
+                <div id="transactionsTab" class="notification-tab-content active">
+                    <div id="notificationTransactionsList"></div>
+                </div>
+
+                <!-- Reports Tab -->
+                <div id="reportsTab" class="notification-tab-content">
+                    <div id="notificationReportsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
@@ -1369,25 +1619,167 @@
             const formatted = VanstraBank.formatCurrency(balance);
             return formatted + '.';
         }
-        
-        let balanceVisible = true;
-        
-        function toggleBalanceVisibility() {
-            const balanceElement = document.getElementById('balanceAmount');
-            const eyeToggle = document.getElementById('eyeToggle');
+
+        // Notifications
+        function openNotifications() {
+            populateNotifications();
+            openModal('notificationsModal');
+        }
+
+        function switchNotificationTab(tab) {
+            // Hide all tabs
+            document.getElementById('transactionsTab').classList.remove('active');
+            document.getElementById('reportsTab').classList.remove('active');
             
-            balanceVisible = !balanceVisible;
+            // Remove active class from all buttons
+            document.querySelectorAll('.notification-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
             
-            if (balanceVisible) {
-                balanceElement.classList.remove('balance-hidden');
-                eyeToggle.textContent = '👁️';
+            // Show selected tab
+            if (tab === 'transactions') {
+                document.getElementById('transactionsTab').classList.add('active');
+                document.querySelectorAll('.notification-tab')[0].classList.add('active');
             } else {
-                balanceElement.classList.add('balance-hidden');
-                eyeToggle.textContent = '👁️‍🗨️';
+                document.getElementById('reportsTab').classList.add('active');
+                document.querySelectorAll('.notification-tab')[1].classList.add('active');
             }
         }
+
+        function populateNotifications() {
+            populateTransactionsTab();
+            populateReportsTab();
+        }
+
+        function populateTransactionsTab() {
+            if (!currentUser || !currentUser.transactions) return;
+            
+            const transactions = currentUser.transactions || [];
+            const container = document.getElementById('notificationTransactionsList');
+            
+            if (transactions.length === 0) {
+                container.innerHTML = '<div class="notification-empty"><div class="notification-empty-icon">📭</div><p>No transactions yet</p></div>';
+                return;
+            }
+            
+            container.innerHTML = transactions.map(tx => {
+                const isIncome = tx.amount > 0;
+                const iconClass = tx.status === 'pending' ? 'pending' : (isIncome ? 'income' : 'expense');
+                const amountClass = isIncome ? 'income' : 'expense';
+                const amountPrefix = isIncome ? '+' : '';
+                const icon = tx.status === 'pending' ? '⏳' : (isIncome ? '⬆️' : '⬇️');
+                
+                return `
+                    <div class="notification-transaction-item" onclick="showReceipt('${tx.id}')">
+                        <div class="notification-transaction-icon ${iconClass}">
+                            ${icon}
+                        </div>
+                        <div class="notification-transaction-details">
+                            <div class="notification-transaction-title">${tx.description}</div>
+                            <div class="notification-transaction-meta">${tx.recipientName || tx.category || 'Vanstra Bank'} • ${VanstraBank.formatDate(tx.timestamp)}</div>
+                        </div>
+                        <div class="notification-transaction-amount">
+                            <div class="notification-transaction-value ${amountClass}">${amountPrefix}${VanstraBank.formatCurrency(Math.abs(tx.amount))}</div>
+                            <div class="notification-transaction-status">${tx.status}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function populateReportsTab() {
+            if (!currentUser) return;
+            
+            const transactions = currentUser.transactions || [];
+            const container = document.getElementById('notificationReportsList');
+            
+            if (transactions.length === 0) {
+                container.innerHTML = '<div class="notification-empty"><div class="notification-empty-icon">📊</div><p>No transaction data available</p></div>';
+                return;
+            }
+            
+            // Calculate statistics
+            const income = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+            const expenses = Math.abs(transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0));
+            const pending = transactions.filter(t => t.status === 'pending').length;
+            const completed = transactions.filter(t => t.status === 'completed').length;
+            
+            // Group by month
+            const monthlyData = {};
+            transactions.forEach(tx => {
+                const date = new Date(tx.timestamp);
+                const monthKey = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                if (!monthlyData[monthKey]) {
+                    monthlyData[monthKey] = { income: 0, expenses: 0, count: 0 };
+                }
+                if (tx.amount > 0) {
+                    monthlyData[monthKey].income += tx.amount;
+                } else {
+                    monthlyData[monthKey].expenses += Math.abs(tx.amount);
+                }
+                monthlyData[monthKey].count++;
+            });
+            
+            // Build reports HTML
+            let reportsHTML = `
+                <div class="notification-report-card">
+                    <div class="notification-report-title">📈 Overall Statistics</div>
+                    <div class="notification-report-stat">
+                        <span class="notification-report-stat-label">Total Income</span>
+                        <span class="notification-report-stat-value income">+${VanstraBank.formatCurrency(income)}</span>
+                    </div>
+                    <div class="notification-report-stat">
+                        <span class="notification-report-stat-label">Total Expenses</span>
+                        <span class="notification-report-stat-value expense">-${VanstraBank.formatCurrency(expenses)}</span>
+                    </div>
+                    <div class="notification-report-stat">
+                        <span class="notification-report-stat-label">Net Balance Change</span>
+                        <span class="notification-report-stat-value ${income - expenses >= 0 ? 'income' : 'expense'}">
+                            ${income - expenses >= 0 ? '+' : '-'}${VanstraBank.formatCurrency(Math.abs(income - expenses))}
+                        </span>
+                    </div>
+                    <div class="notification-report-stat">
+                        <span class="notification-report-stat-label">Total Transactions</span>
+                        <span class="notification-report-stat-value">${transactions.length}</span>
+                    </div>
+                    <div class="notification-report-stat">
+                        <span class="notification-report-stat-label">Completed</span>
+                        <span class="notification-report-stat-value">${completed}</span>
+                    </div>
+                    <div class="notification-report-stat">
+                        <span class="notification-report-stat-label">Pending</span>
+                        <span class="notification-report-stat-value">${pending}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Add monthly breakdown
+            Object.keys(monthlyData).reverse().slice(0, 3).forEach(month => {
+                const data = monthlyData[month];
+                reportsHTML += `
+                    <div class="notification-report-card">
+                        <div class="notification-report-title">📅 ${month}</div>
+                        <div class="notification-report-stat">
+                            <span class="notification-report-stat-label">Income</span>
+                            <span class="notification-report-stat-value income">+${VanstraBank.formatCurrency(data.income)}</span>
+                        </div>
+                        <div class="notification-report-stat">
+                            <span class="notification-report-stat-label">Expenses</span>
+                            <span class="notification-report-stat-value expense">-${VanstraBank.formatCurrency(data.expenses)}</span>
+                        </div>
+                        <div class="notification-report-stat">
+                            <span class="notification-report-stat-label">Transactions</span>
+                            <span class="notification-report-stat-value">${data.count}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = reportsHTML;
+        }
+
         
-        function openNotifications() {
+        function openNotifications_old() {
             alert('You have no new notifications');
         }
 
@@ -1522,6 +1914,19 @@
             });
         }
 
+        function getTransactionIcon(tx) {
+            const type = tx.type?.toLowerCase() || '';
+            const isIncome = tx.amount > 0;
+            
+            if (type.includes('deposit')) return '📊';
+            if (type.includes('transfer')) return '💸';
+            if (type.includes('bill')) return '📄';
+            if (type.includes('withdrawal')) return '💰';
+            if (type.includes('income')) return '📈';
+            if (type.includes('payment')) return '💳';
+            return isIncome ? '📩' : '📤';
+        }
+        
         function renderTransactions() {
             if (!currentUser || !currentUser.transactions) return;
             
@@ -1538,16 +1943,12 @@
                 const iconClass = tx.status === 'pending' ? 'pending' : (isIncome ? 'income' : 'expense');
                 const amountClass = isIncome ? 'income' : 'expense';
                 const amountPrefix = isIncome ? '+' : '';
+                const transactionIcon = getTransactionIcon(tx);
                 
                 return `
                     <div class="transaction-item" onclick="showReceipt('${tx.id}')">
-                        <div class="transaction-icon ${iconClass}">
-                            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                ${isIncome 
-                                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>'
-                                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>'
-                                }
-                            </svg>
+                        <div class="transaction-icon ${iconClass}" style="font-size: 20px;">
+                            ${transactionIcon}
                         </div>
                         <div class="transaction-details">
                             <div class="transaction-title">${tx.description}</div>
@@ -1824,46 +2225,62 @@
             
             currentReceipt = tx;
             const isIncome = tx.amount > 0;
+            const transactionIcon = getTransactionIcon(tx);
             
             document.getElementById('receiptContent').innerHTML = `
                 <div class="receipt">
                     <div class="receipt-header">
-                        <img src="logo-v.png" alt="Vanstra" class="receipt-logo">
+                        <div class="receipt-logo">${transactionIcon}</div>
+                        <div class="receipt-title">${tx.type || 'Transaction'}</div>
                         <div class="receipt-amount ${isIncome ? 'text-green-600' : 'text-red-600'}">
-                            ${isIncome ? '+' : ''}${VanstraBank.formatCurrency(tx.amount)}
+                            ${isIncome ? '+' : '-'}${VanstraBank.formatCurrency(Math.abs(tx.amount))}
                         </div>
-                        <p class="text-gray-500 text-sm mt-1">${tx.description}</p>
+                        <div class="receipt-description">${tx.description}</div>
                     </div>
                     
-                    <div class="receipt-row">
-                        <span class="receipt-label">Transaction ID</span>
-                        <span class="receipt-value font-mono">${tx.id}</span>
+                    <div class="receipt-body">
+                        <div class="receipt-section">
+                            <div class="receipt-section-title">Transaction Details</div>
+                            <div class="receipt-row">
+                                <span class="receipt-label">Date & Time</span>
+                                <span class="receipt-value">${VanstraBank.formatDateTime(tx.timestamp)}</span>
+                            </div>
+                            <div class="receipt-row">
+                                <span class="receipt-label">Status</span>
+                                <span class="receipt-value">
+                                    <span class="receipt-status ${tx.status}">${tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}</span>
+                                </span>
+                            </div>
+                            <div class="receipt-row">
+                                <span class="receipt-label">Reference</span>
+                                <span class="receipt-value" style="font-family: monospace; font-size: 12px;">${tx.reference}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="receipt-section">
+                            <div class="receipt-section-title">Party Details</div>
+                            <div class="receipt-row">
+                                <span class="receipt-label">${isIncome ? 'From' : 'To'}</span>
+                                <span class="receipt-value">${tx.recipientName || 'N/A'}</span>
+                            </div>
+                            ${tx.recipientAccount ? `
+                            <div class="receipt-row">
+                                <span class="receipt-label">Account / IBAN</span>
+                                <span class="receipt-value" style="font-family: monospace; font-size: 12px;">${tx.recipientAccount}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="receipt-section">
+                            <div class="receipt-section-title">Transaction ID</div>
+                            <div class="receipt-row">
+                                <span class="receipt-value" style="font-family: monospace; font-size: 12px; width: 100%; word-break: break-all;">${tx.id}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Date & Time</span>
-                        <span class="receipt-value">${VanstraBank.formatDateTime(tx.timestamp)}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Type</span>
-                        <span class="receipt-value capitalize">${tx.type}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">${isIncome ? 'From' : 'To'}</span>
-                        <span class="receipt-value">${tx.recipientName || 'N/A'}</span>
-                    </div>
-                    ${tx.recipientAccount ? `
-                    <div class="receipt-row">
-                        <span class="receipt-label">Account</span>
-                        <span class="receipt-value font-mono">${tx.recipientAccount}</span>
-                    </div>
-                    ` : ''}
-                    <div class="receipt-row">
-                        <span class="receipt-label">Reference</span>
-                        <span class="receipt-value font-mono">${tx.reference}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Status</span>
-                        <span class="receipt-status ${tx.status}">${tx.status}</span>
+                    
+                    <div class="receipt-footer">
+                        Vanstra Capital Banking • Your Financial Partner
                     </div>
                 </div>
             `;
