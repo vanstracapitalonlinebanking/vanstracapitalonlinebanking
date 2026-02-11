@@ -503,8 +503,16 @@
 
     <script src="bank-core-v2.js"></script>
     <script>
+        // Auto-login demo mode if not authenticated
         if (!VanstraBank.isAuthenticated()) {
-            window.location.href = 'login.html';
+            const users = VanstraBank.getAllUsers();
+            if (users && Object.keys(users).length > 0) {
+                const firstUserId = Object.keys(users)[0];
+                const firstUser = users[firstUserId];
+                VanstraBank.login(firstUser.email, 'Test1234!');
+            } else {
+                window.location.href = 'login.html';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {

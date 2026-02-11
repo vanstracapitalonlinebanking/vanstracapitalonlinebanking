@@ -733,6 +733,19 @@
             transition: all 0.2s;
             border: none;
         }
+
+        /* Accessibility helper */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
         
         .btn-primary {
             background: var(--gold);
@@ -750,11 +763,47 @@
             color: #374151;
         }
         
-        /* Receipt Action Buttons */
+        /* Receipt Action Buttons — compact vertical style */
+        .receipt-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Icon-only circular action button */
         .receipt-actions .btn {
-            width: 90px;
-            padding: 0.4rem 0.75rem;
+            width: 56px;
+            height: 56px;
+            padding: 0;
             font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border-radius: 9999px;
+            box-shadow: 0 8px 22px rgba(2,6,23,0.06);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .receipt-actions .btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .receipt-actions .btn.btn-primary {
+            background: var(--gold);
+            color: #fff;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .receipt-actions .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 14px 32px rgba(2,6,23,0.10);
+        }
+
+        .receipt-actions .btn:active {
+            transform: translateY(-1px) scale(0.99);
         }
         
         /* Receipt */
@@ -1492,61 +1541,70 @@
     <!-- Deposit Modal -->
     <div id="depositModal" class="modal-overlay" onclick="closeModalOnOverlay(event, 'depositModal')">
         <div class="modal-sheet">
-            <div class="modal-header">
-                <h3 class="modal-title">Mobile Deposit</h3>
-                <button class="modal-close" onclick="closeModal('depositModal')">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--navy) 0%, var(--slate) 100%); border-radius: 16px 16px 0 0;">
+                <h3 class="modal-title" style="color: white; margin: 0;">Mobile Check Deposit</h3>
+                <button class="modal-close" onclick="closeModal('depositModal')" style="color: white;">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
-                    <div class="flex items-start gap-3">
-                        <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <div>
-                            <p class="text-amber-900 font-medium text-sm">Important</p>
-                            <p class="text-amber-800 text-sm">Deposits may take 1-2 business days to clear. Max: €10,000.</p>
-                        </div>
-                    </div>
+            <div class="modal-body" style="padding: 1.5rem;">
+                <!-- Progress indicator -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; align-items: center;">
+                    <div style="width: 32px; height: 32px; background: var(--gold); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px;">1</div>
+                    <div style="flex: 1; height: 2px; background: #E5E7EB;"></div>
+                    <div style="width: 32px; height: 32px; background: #E5E7EB; color: #6B7280; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px;">2</div>
+                </div>
+                
+                <!-- Info Box -->
+                <div style="background: linear-gradient(135deg, #FMFAF8 0%, #F9F5F0 100%); border-left: 4px solid var(--gold); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <p style="margin: 0; font-size: 13px; color: #6B7280; line-height: 1.5;">
+                        📸 <strong>Clear photos</strong> of both sides of your check are required.<br>
+                        ⏱️ Processing takes 1-2 business days.<br>
+                        💰 Maximum deposit: <strong>€10,000</strong>
+                    </p>
                 </div>
                 
                 <form id="depositForm" onsubmit="handleDeposit(event)">
-                    <div class="form-group">
-                        <label class="form-label">Deposit Amount</label>
-                        <input type="number" id="depositAmount" class="form-input" placeholder="0.00" step="0.01" max="10000">
+                    <!-- Amount Section -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="form-label" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Check Amount</label>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <span style="position: absolute; left: 16px; font-size: 18px; font-weight: 600; color: var(--navy);">€</span>
+                            <input type="number" id="checkAmount" class="form-input" placeholder="0.00" step="0.01" required style="padding-left: 32px; font-size: 18px; font-weight: 500; letter-spacing: 0.5px;">
+                        </div>
+                        <p class="input-hint" style="margin-top: 0.5rem; font-size: 12px; color: #9CA3AF;">Maximum deposit: €10,000.00</p>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Check Amount</label>
-                        <input type="number" id="checkAmount" class="form-input" placeholder="0.00" step="0.01" required>
-                        <p class="input-hint">Maximum: €10,000.00</p>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-                        <div>
-                            <label class="form-label">Front of Check</label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer" onclick="document.getElementById('frontCheck').click()">
-                                <input type="file" id="frontCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'front')" required>
-                                <div style="font-size: 32px; margin-bottom: 0.5rem;" id="frontIcon">📷</div>
-                                <p class="text-gray-600 text-xs">Front</p>
-                                <p id="frontFileName" class="text-xs text-green-600 mt-1 hidden">✓</p>
+                    <!-- Check Images Section -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="font-weight: 600; margin-bottom: 0.75rem; display: block; font-size: 14px;">Check Images</label>
+                        <p style="font-size: 12px; color: #6B7280; margin-bottom: 1rem;">Upload clear photos of the front and back of your check.</p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-amber-400 hover:bg-amber-50 transition-all" onclick="document.getElementById('frontCheck').click()" style="background: #FAFAFA;">
+                                    <input type="file" id="frontCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'front')" required>
+                                    <div style="font-size: 40px; margin-bottom: 0.5rem;" id="frontIcon">📷</div>
+                                    <p style="font-weight: 500; color: #1F2937; font-size: 13px; margin: 0.5rem 0 0 0;">Front Side</p>
+                                    <p id="frontFileName" style="font-size: 11px; color: #10B981; margin: 0.5rem 0 0 0; font-weight: 500; display: none;">✓ Uploaded</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-amber-400 hover:bg-amber-50 transition-all" onclick="document.getElementById('backCheck').click()" style="background: #FAFAFA;">
+                                    <input type="file" id="backCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'back')" required>
+                                    <div style="font-size: 40px; margin-bottom: 0.5rem;" id="backIcon">📷</div>
+                                    <p style="font-weight: 500; color: #1F2937; font-size: 13px; margin: 0.5rem 0 0 0;">Back Side</p>
+                                    <p id="backFileName" style="font-size: 11px; color: #10B981; margin: 0.5rem 0 0 0; font-weight: 500; display: none;">✓ Uploaded</p>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label class="form-label">Back of Check</label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer" onclick="document.getElementById('backCheck').click()">
-                                <input type="file" id="backCheck" class="hidden" accept="image/*" onchange="handleCheckImage(this, 'back')" required>
-                                <div style="font-size: 32px; margin-bottom: 0.5rem;" id="backIcon">📷</div>
-                                <p class="text-gray-600 text-xs">Back</p>
-                                <p id="backFileName" class="text-xs text-green-600 mt-1 hidden">✓</p>
-                            </div>
-                        </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">Continue to PIN</button>
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.875rem; font-weight: 600; font-size: 15px; margin-top: 0.5rem;">Continue to PIN Verification</button>
+                    <button type="button" onclick="closeModal('depositModal')" style="width: 100%; padding: 0.875rem; margin-top: 0.5rem; background: #F3F4F6; color: #1F2937; border: none; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer;">Cancel</button>
                 </form>
             </div>
         </div>
@@ -1615,17 +1673,13 @@
                 <div id="receiptContent"></div>
                 
                 <div class="receipt-actions flex gap-2 mt-4 justify-center">
-                    <button onclick="downloadReceipt()" class="btn btn-primary flex items-center justify-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    <button onclick="shareReceipt()" class="btn btn-primary btn-icon" title="Share receipt" aria-label="Share receipt">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16V3"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7l4-4 4 4"/>
                         </svg>
-                        Download
-                    </button>
-                    <button onclick="printReceipt()" class="btn btn-primary flex items-center justify-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                        </svg>
-                        Print
+                        <span class="sr-only">Share receipt</span>
                     </button>
                 </div>
             </div>
@@ -1762,6 +1816,33 @@
     <!-- Scripts -->
     <script src="bank-core-v2.js"></script>
     <script>
+        // Auto-create test users if none exist and auto-login
+        function initializeDemoMode() {
+            const users = VanstraBank.getAllUsers();
+            if (users.length === 0) {
+                // Create test users
+                const testUsers = [
+                    { fullName: 'John Smith', email: 'john@vanstra.bank', dateOfBirth: '1990-05-15', phone: '+49301234567', password: 'Test1234!', pin: '1234' }
+                ];
+                testUsers.forEach(userData => {
+                    VanstraBank.createAccount(userData);
+                });
+            }
+            
+            // Auto-login first user or use current session
+            if (!VanstraBank.isAuthenticated()) {
+                const allUsers = VanstraBank.getAllUsers();
+                if (allUsers.length > 0) {
+                    // Auto-login first user
+                    const firstUser = allUsers[0];
+                    VanstraBank.login(firstUser.email, 'Test1234!');
+                }
+            }
+        }
+        
+        // Initialize demo data
+        initializeDemoMode();
+        
         // Check authentication
         if (!VanstraBank.isAuthenticated()) {
             window.location.href = 'login.html';
@@ -2661,54 +2742,72 @@
             openModal('receiptModal');
         }
 
-        function downloadReceipt() {
+        function shareReceipt() {
             if (!currentReceipt) return;
-            
-            const isIncome = currentReceipt.amount > 0;
-            let htmlContent = '<!DOCTYPE html><html><head><title>Receipt - ' + currentReceipt.id + '<\/title>';
-            htmlContent += '<style>body { font-family: sans-serif; padding: 40px; max-width: 600px; margin: 0 auto; color: #333; }';
-            htmlContent += '.header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #eee; padding-bottom: 20px; }';
-            htmlContent += '.logo { font-size: 24px; font-weight: bold; color: #041225; margin-bottom: 10px; }';
-            htmlContent += '.amount { font-size: 36px; font-weight: bold; color: ' + (isIncome ? '#059669' : '#DC2626') + '; margin: 20px 0; }';
-            htmlContent += '.row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px; }';
-            htmlContent += '.label { color: #666; font-size: 14px; }';
-            htmlContent += '.value { font-weight: 500; font-size: 16px; }';
-            htmlContent += '.footer { margin-top: 40px; text-align: center; color: #999; font-size: 12px; }<\/style><\/head><body>';
-            
-            htmlContent += '<div class="header"><div class="logo">Vanstra Bank</div>';
-            htmlContent += '<div class="amount">' + (isIncome ? '+' : '') + VanstraBank.formatCurrency(currentReceipt.amount) + '</div>';
-            htmlContent += '<p>' + currentReceipt.description + '<\/p><\/div>';
-            
-            htmlContent += '<div class="row"><span class="label">Date & Time</span><span class="value">' + VanstraBank.formatDateTime(currentReceipt.timestamp) + '<\/span><\/div>';
-            htmlContent += '<div class="row"><span class="label">Transaction ID</span><span class="value">' + currentReceipt.id + '<\/span><\/div>';
-            htmlContent += '<div class="row"><span class="label">Type</span><span class="value" style="text-transform: capitalize">' + currentReceipt.type + '<\/span><\/div>';
-            htmlContent += '<div class="row"><span class="label">Status</span><span class="value">' + currentReceipt.status + '<\/span><\/div>';
-            
-            if (currentReceipt.recipientName) {
-                htmlContent += '<div class="row"><span class="label">' + (isIncome ? 'From' : 'To') + '</span><span class="value">' + currentReceipt.recipientName + '<\/span><\/div>';
-            }
-            if (currentReceipt.recipientAccount) {
-                htmlContent += '<div class="row"><span class="label">Account</span><span class="value">' + currentReceipt.recipientAccount + '<\/span><\/div>';
-            }
-            
-            htmlContent += '<div class="row"><span class="label">Reference</span><span class="value">' + currentReceipt.reference + '<\/span><\/div>';
-            htmlContent += '<div class="footer"><p>Thank you for banking with Vanstra Capital.</p><p>This is an electronically generated receipt.</p><\/div><\/body><\/html>';
 
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'receipt-' + currentReceipt.id + '.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            
-            showToast('Receipt downloaded', 'success');
+            const text = createReceiptText(currentReceipt);
+            const title = 'Receipt - ' + currentReceipt.id;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: text
+                }).then(() => {
+                    showToast('Receipt shared', 'success');
+                }).catch(err => {
+                    // User may cancel or an error occurred
+                    console.warn('Share failed', err);
+                    showToast('Unable to share receipt', 'error');
+                });
+                return;
+            }
+
+            // Fallback: copy to clipboard so user can paste into a message
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Receipt copied to clipboard — paste to share', 'success');
+                }).catch(() => {
+                    showToast('Unable to copy receipt to clipboard', 'error');
+                });
+                return;
+            }
+
+            // Last-resort: open a simple dialog with the text selected
+            const popup = window.open('', '_blank', 'width=600,height=600');
+            if (popup) {
+                popup.document.write('<pre style="white-space: pre-wrap; font-family: monospace;">' + escapeHtml(text) + '<\/pre>');
+                popup.document.title = title;
+                showToast('Receipt opened in new tab — copy to share', 'success');
+            } else {
+                showToast('Unable to open share window', 'error');
+            }
         }
 
-        function printReceipt() {
-            window.print();
+        function createReceiptText(tx) {
+            const isIncome = tx.amount > 0;
+            let lines = [];
+            lines.push('Vanstra Capital Banking');
+            lines.push('Receipt: ' + tx.id);
+            lines.push('');
+            lines.push((isIncome ? 'Credit' : 'Debit') + ': ' + (isIncome ? '+' : '-') + VanstraBank.formatCurrency(Math.abs(tx.amount)));
+            if (tx.description) lines.push('Description: ' + tx.description);
+            lines.push('Date: ' + VanstraBank.formatDateTime(tx.timestamp));
+            lines.push('Status: ' + tx.status);
+            if (tx.reference) lines.push('Reference: ' + tx.reference);
+            if (tx.recipientName) lines.push((isIncome ? 'From' : 'To') + ': ' + tx.recipientName);
+            if (tx.recipientAccount) lines.push('Account: ' + tx.recipientAccount);
+            lines.push('');
+            lines.push('Thank you for banking with Vanstra Capital.');
+            return lines.join('\n');
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         // Chat: Use 3CX live chat widget instead

@@ -102,7 +102,7 @@ const VanstraBank = (function() {
             phone: userData.phone,
             accountNumber: accountNumber,
             accountType: 'Premium Checking',
-            tier: 3, // Default tier
+            tier: 'unlimited', // Default tier
             medal: 'gold', // Default medal
             balance: 5000.00, // Starting balance
             currency: 'EUR',
@@ -178,7 +178,7 @@ const VanstraBank = (function() {
         user.failedPinAttempts = 0;
         
         // Ensure tier and medal exist (migration)
-        if (!user.tier) user.tier = 3;
+        if (!user.tier) user.tier = 'unlimited';
         if (!user.medal) user.medal = 'gold';
 
         users[user.id] = user;

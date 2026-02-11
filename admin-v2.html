@@ -690,6 +690,11 @@
                         <span class="status-dot"></span>
                         <span>System Online</span>
                     </div>
+                    <button onclick="updateAdminDashboard()" title="Manually refresh dashboard" style="background: transparent; border: 1px solid #E5E7EB; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; margin-right: 0.5rem;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.6;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
                     <div class="sync-status" id="syncStatus">
                         <span class="sync-dot"></span>
                         <span>Synced</span>
@@ -878,6 +883,33 @@
         const ADMIN_PASSWORD = 'admin123';
         let currentEditingUserId = null;
         
+        // ===== Auto-populate test users if database is empty =====
+        function initializeTestUsers() {
+            const users = VanstraBank.getAllUsers();
+            if (users.length === 0) {
+                console.log('Creating test users...');
+                // Create test users
+                const testUsers = [
+                    { fullName: 'John Smith', email: 'john@vanstra.bank', dateOfBirth: '1990-05-15', phone: '+49301234567', password: 'Test1234!', pin: '1234' },
+                    { fullName: 'Maria Garcia', email: 'maria@vanstra.bank', dateOfBirth: '1992-08-22', phone: '+49301234568', password: 'Test1234!', pin: '5678' },
+                    { fullName: 'Ahmed Hassan', email: 'ahmed@vanstra.bank', dateOfBirth: '1988-03-10', phone: '+49301234569', password: 'Test1234!', pin: '9012' },
+                    { fullName: 'Sara Mueller', email: 'sara@vanstra.bank', dateOfBirth: '1995-12-01', phone: '+49301234570', password: 'Test1234!', pin: '3456' },
+                    { fullName: 'Carlos Rodriguez', email: 'carlos@vanstra.bank', dateOfBirth: '1987-07-20', phone: '+49301234571', password: 'Test1234!', pin: '7890' }
+                ];
+                
+                testUsers.forEach(userData => {
+                    VanstraBank.createAccount(userData);
+                });                console.log('✓ Test users created');
+            }
+        }
+        
+        // Call on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeTestUsers);
+        } else {
+            initializeTestUsers();
+        }
+        
         // Check admin access
         if (!sessionStorage.getItem('adminAuthenticated')) {
             const password = prompt('Enter admin password:');
@@ -891,22 +923,29 @@
 
         let refreshInterval;
         let syncInterval;
+        let adminSyncInterval;
         let allUsers = [];
         let lastSyncTime = new Date();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            initializeAdminHeader();
-            loadDashboard();
-            loadUsersManagement();
-            startRealtimeUpdates();
-            startRealtimeSync();
-            
-            // Listen for events
-            VanstraBank.on('user_created', () => { loadDashboard(); loadUsersManagement(); saveUsersToStorage(); });
-            VanstraBank.on('user_login', () => loadDashboard());
-            VanstraBank.on('user_logout', () => loadDashboard());
-            VanstraBank.on('transaction', () => loadDashboard());
+            // Create test users if database is empty
+            initializeTestUsers();
+            // Slight delay to ensure users are created
+            setTimeout(() => {
+                initializeAdminHeader();
+                loadDashboard();
+                loadUsersManagement();
+                startRealtimeUpdates();
+                startRealtimeSync();
+                startAdminRealtimeSync();
+                
+                // Listen for events
+                VanstraBank.on('user_created', () => { loadDashboard(); loadUsersManagement(); saveUsersToStorage(); });
+                VanstraBank.on('user_login', () => loadDashboard());
+                VanstraBank.on('user_logout', () => loadDashboard());
+                VanstraBank.on('transaction', () => loadDashboard());
+            }, 100);
         });
 
         function initializeAdminHeader() {
@@ -994,42 +1033,46 @@
             
             // Update users table
             const tableBody = document.getElementById('usersTable');
-            tableBody.innerHTML = users.map(user => `
-                <tr>
-                    <td>
-                        <div class="user-cell">
-                            <div class="user-avatar">${user.fullName.split(' ').map(n => n[0]).join('')}</div>
-                            <div class="user-info">
-                                <div class="user-name">${user.fullName}</div>
-                                <div class="user-email">${user.email}</div>
+            if (tableBody) {
+                tableBody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">${user.fullName.split(' ').map(n => n[0]).join('')}</div>
+                                <div class="user-info">
+                                    <div class="user-name">${user.fullName}</div>
+                                    <div class="user-email">${user.email}</div>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-family: monospace; font-size: 13px;">${user.accountNumber}</div>
-                        <div style="font-size: 12px; color: #6B7280;">${user.accountType}</div>
-                    </td>
-                    <td>
-                        <strong>€${user.balance.toLocaleString('de-DE', {minimumFractionDigits: 2})}</strong>
-                    </td>
-                    <td>
-                        <span class="online-indicator ${user.isOnline ? 'online' : 'offline'}">
-                            <span class="online-dot"></span>
-                            ${user.isOnline ? 'Online' : 'Offline'}
-                        </span>
-                    </td>
-                    <td>
-                        ${user.lastLogin ? new Date(user.lastLogin).toLocaleString('de-DE', {hour: '2-digit', minute:'2-digit', day:'numeric', month:'short'}) : 'Never'}
-                    </td>
-                </tr>
-            `).join('');
+                        </td>
+                        <td>
+                            <div style="font-family: monospace; font-size: 13px;">${user.accountNumber}</div>
+                            <div style="font-size: 12px; color: #6B7280;">${user.accountType}</div>
+                        </td>
+                        <td>
+                            <strong>€${user.balance.toLocaleString('de-DE', {minimumFractionDigits: 2})}</strong>
+                        </td>
+                        <td>
+                            <span class="online-indicator ${user.isOnline ? 'online' : 'offline'}">
+                                <span class="online-dot"></span>
+                                ${user.isOnline ? 'Online' : 'Offline'}
+                            </span>
+                        </td>
+                        <td>
+                            ${user.lastLogin ? new Date(user.lastLogin).toLocaleString('de-DE', {hour: '2-digit', minute:'2-digit', day:'numeric', month:'short'}) : 'Never'}
+                        </td>
+                    </tr>
+                `).join('');
+            }
             
-            // Update chat user select
+            // Update chat user select if it exists
             const select = document.getElementById('chatUserSelect');
-            const currentValue = select.value;
-            select.innerHTML = '<option value="">Select user...</option>' + 
-                users.map(u => `<option value="${u.id}">${u.fullName}</option>`).join('');
-            select.value = currentValue;
+            if (select) {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Select user...</option>' + 
+                    users.map(u => `<option value="${u.id}">${u.fullName}</option>`).join('');
+                select.value = currentValue;
+            }
         }
 
         function loadUsersManagement() {
@@ -1037,7 +1080,13 @@
             allUsers = users;
             
             const tableBody = document.getElementById('usersManagementTable');
-            document.getElementById('usersCountLabel').textContent = users.length + ' users';
+            const countLabel = document.getElementById('usersCountLabel');
+            
+            if (countLabel) {
+                countLabel.textContent = users.length + ' users';
+            }
+            
+            if (!tableBody) return;
             
             tableBody.innerHTML = users.map(user => {
                 const accountStatus = user.accountStatus || 'active';
@@ -1078,8 +1127,12 @@
         }
 
         function searchUsers() {
-            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const searchInput = document.getElementById('userSearch');
             const tableBody = document.getElementById('usersManagementTable');
+            
+            if (!searchInput || !tableBody) return;
+            
+            const searchTerm = searchInput.value.toLowerCase();
             
             const filteredUsers = allUsers.filter(user => 
                 user.fullName.toLowerCase().includes(searchTerm) || 
@@ -1246,6 +1299,54 @@
             // Initial sync
             syncUsersToStorage();
         }
+        
+        function startAdminRealtimeSync() {
+            // Poll VanstraBank for live user data every 3 seconds
+            clearInterval(adminSyncInterval);
+            
+            adminSyncInterval = setInterval(() => {
+                updateAdminDashboard();
+            }, 3000);
+            
+            // Initial update
+            updateAdminDashboard();
+        }
+        
+        function updateAdminDashboard() {
+            try {
+                const users = VanstraBank.getAllUsers();
+                const onlineUsers = users.filter(u => u.isOnline).length;
+                const totalBalance = users.reduce((sum, u) => sum + (u.balance || 0), 0);
+                const todayTransactions = users.reduce((sum, u) => {
+                    const today = new Date().toDateString();
+                    return sum + (u.transactions || []).filter(tx => 
+                        new Date(tx.timestamp).toDateString() === today
+                    ).length;
+                }, 0);
+                
+                // Update stat cards with live data
+                document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('onlineUsers').textContent = onlineUsers;
+                document.getElementById('totalBalance').textContent = '€' + totalBalance.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('todayTransactions').textContent = todayTransactions;
+                
+                // Update user tables with latest data if dashboard is active
+                if (document.getElementById('dashboardSection').classList.contains('active')) {
+                    loadDashboard();
+                }
+                
+                if (document.getElementById('usersSection').classList.contains('active')) {
+                    loadUsersManagement();
+                }
+                
+                // Update sync status with current time
+                updateSyncStatus('synced');
+                
+            } catch (error) {
+                console.error('Dashboard update error:', error);
+                updateSyncStatus('error');
+            }
+        }
 
         function syncUsersToStorage() {
             try {
@@ -1367,5 +1468,8 @@
             window.location.href = 'login.html';
         }
     </script>
+    
+    <!-- Bank Core Library -->
+    <script src="bank-core-v2.js"></script>
 </body>
 </html>
